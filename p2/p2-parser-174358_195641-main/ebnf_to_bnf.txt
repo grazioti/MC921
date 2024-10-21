@@ -1,0 +1,121 @@
+program : global_declaration_kcross
+
+global_declaration_kcross : global_declaration_kcross global_declaration | global_declaration
+
+global_declaration : function_definition | declaration
+
+function_definition : type_specifier declarator compound_statement
+
+type_specifier : void | char | int
+
+declarator : identifier
+            | LPAREN declarator RPAREN
+            | declarator LBRACKET constant_expression LBRACKET
+            | declarator LBRACKET LBRACKET
+            | declarator LPAREN parameter_list RPAREN
+            | declarator LPAREN RPAREN
+            
+constant_expression : binary_expression
+
+binary_expression : unary_expression
+                      | binary_expression  TIMES   binary_expression
+                      | binary_expression  DIVIDE   binary_expression
+                      | binary_expression  MOD   binary_expression
+                      | binary_expression  PLUS   binary_expression
+                      | binary_expression  MINUS   binary_expression
+                      | binary_expression  LT   binary_expression
+                      | binary_expression  LE  binary_expression
+                      | binary_expression  GT   binary_expression
+                      | binary_expression  GE  binary_expression
+                      | binary_expression  EQ  binary_expression
+                      | binary_expression  NE  binary_expression
+                      | binary_expression  AND  binary_expression
+                      | binary_expression  OR  binary_expression
+
+unary_expression : postfix_expression
+                     | unary_operator unary_expression
+
+postfix_expression : primary_expression
+                       | postfix_expression LBRACKET expression RBRACKET
+                       | postfix_expression LPAREN argument_expression RPAREN
+                       | postfix_expression LPAREN RPAREN
+
+primary_expression : identifier
+                       | constant
+                       | string
+                       | LPAREN expression RPAREN
+
+constant : integer_constant
+             | character_constant
+
+expression : assignment_expression
+               | expression COMMA assignment_expression
+
+argument_expression : assignment_expression
+                        | argument_expression COMMA assignment_expression
+
+assignment_expression : binary_expression
+                          | unary_expression EQUALS assignment_expression
+
+unary_operator : PLUS
+                   | MINUS
+                   | NOT
+
+parameter_list : parameter_declaration
+                   | parameter_list COMMA parameter_declaration
+
+parameter_declaration : type_specifier declarator
+
+declaration :  type_specifier init_declarator_list SEMI
+                | type_specifier SEMI
+
+init_declarator_list : init_declarator
+                         | init_declarator_list COMMA init_declarator
+
+init_declarator : declarator
+                    | declarator EQUALS initializer
+
+initializer : assignment_expression
+                | LBRACE initializer_list RBRACE
+                | LBRACE RBRACE
+                | LBRACE initializer_list COMMA RBRACE
+
+initializer_list : initializer
+                     | initializer_list COMMA initializer
+
+compound_statement : LBRACE declaration_star statement_star RBRACE
+
+declaration_star : declaration_star declaration | empty
+
+statement_star : statement_star statement | empty
+
+statement : expression_statement
+              | compound_statement
+              | selection_statement
+              | iteration_statement
+              | jump_statement
+              | assert_statement
+              | print_statement
+              | read_statement
+
+expression_statement : expression | empty 
+
+selection_statement : IF LPAREN expression RPAREN statement
+                        | IF LPAREN expression RPAREN statement ELSE statement
+
+iteration_statement : WHILE LPAREN expression RPAREN statement
+                        | FOR LPAREN expression_opt SEMI expression_opt SEMI expression_opt RPAREN statement
+                        | FPR LPAREN declaration expression_opt SEMI expression_opt RPAREN statement
+
+expression_opt: expression | empty
+
+jump_statement : BREAK SEMI
+                   | RETURN LBRACE expression RBRACE SEMI
+                   | RETURN LBRACE RBRACE SEMI
+
+assert_statement : ASSERT expression SEMI
+
+print_statement : PRINT LPAREN LBRACE expression LBRACE LPAREN SEMI
+                    | PRINT LPAREN LBRACE LBRACE LPAREN SEMI
+
+read_statement : READ LPAREN argument_expression RPAREN SEMI
